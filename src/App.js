@@ -14,6 +14,12 @@ class App extends Component {
     ],
     filter: '',
   }
+  componentDidMount() {
+    const savedContacts = localStorage.getItem("contacts");
+    if(savedContacts) {
+      this.setState({contacts: JSON.parse(savedContacts)});
+    }
+  }
   addContact = (name, number) => {
     if(this.state.contacts.find(contact => contact.name === name)) {
       alert(name + " is alerady in contacts.")
@@ -30,8 +36,14 @@ class App extends Component {
   deleteContact = id => {
     this.setState({contacts: this.state.contacts.filter(contact => contact.id !== id)});
   }
+  componentDidUpdate(prevProps, prevState) {
+    if(prevState.contacts === this.state.contacts) {
+      return;
+    }
+    localStorage.setItem("contacts", JSON.stringify(this.state.contacts));
+  }
   getFilter = event => {
-    this.setState({filter: event.currentTarget.value.toLowerCase()})
+    this.setState({filter: event.currentTarget.value.toLowerCase()});
   }
   render() {
     return (
